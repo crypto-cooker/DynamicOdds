@@ -1,0 +1,154 @@
+<runner>
+  <competitorsConnection>
+    <competitors>
+      <finalPosition>4</finalPosition>
+      <jockey>Anthony Cavallo</jockey>
+      <margin>11.29</margin>
+      <race>
+        <number>5</number>
+        <name>Kfc Wellington Plate (C1)</name>
+        <meeting>
+          <date>2021-07-19T00:00:00Z</date>
+          <track>
+            <name>Narromine</name>
+          </track>
+        </meeting>
+      </race>
+    </competitors>
+    <competitors>
+      <finalPosition>0</finalPosition>
+      <jockey>Andrew Banks</jockey>
+      <margin>0</margin>
+      <race>
+        <number>5</number>
+        <name>Kfc Wellington Plate (C1)</name>
+        <meeting>
+          <date>2021-07-19T00:00:00Z</date>
+          <track>
+            <name>Wellington</name>
+          </track>
+        </meeting>
+      </race>
+    </competitors>
+    <competitors>
+      <finalPosition>6</finalPosition>
+      <jockey>Andrew Banks</jockey>
+      <margin>5.52</margin>
+      <race>
+        <number>3</number>
+        <name>Western Rivers Vet Group (C1)</name>
+        <meeting>
+          <date>2021-07-06T00:00:00Z</date>
+          <track>
+            <name>Warren</name>
+          </track>
+        </meeting>
+      </race>
+    </competitors>
+    <competitors>
+      <finalPosition>0</finalPosition>
+      <jockey>Daniel Northey</jockey>
+      <margin>0</margin>
+      <race>
+        <number>5</number>
+        <name>Coonamble Feedlot Hcp (C1)</name>
+        <meeting>
+          <date>2021-06-20T00:00:00Z</date>
+          <track>
+            <name>Coonamble</name>
+          </track>
+        </meeting>
+      </race>
+    </competitors>
+    <competitors>
+      <finalPosition>1</finalPosition>
+      <jockey>Anthony Cavallo</jockey>
+      <margin>0</margin>
+      <race>
+        <number>3</number>
+        <name>Col Hodges Oam Mdn Plate</name>
+        <meeting>
+          <date>2021-05-30T00:00:00Z</date>
+          <track>
+            <name>Wellington</name>
+          </track>
+        </meeting>
+      </race>
+    </competitors>
+    <competitors>
+      <finalPosition>11</finalPosition>
+      <jockey>Andrew Banks</jockey>
+      <margin>9.54</margin>
+      <race>
+        <number>3</number>
+        <name>Maas Plate (C1)</name>
+        <meeting>
+          <date>2021-02-01T00:00:00Z</date>
+          <track>
+            <name>Dubbo</name>
+          </track>
+        </meeting>
+      </race>
+    </competitors>
+    <competitors>
+      <finalPosition>0</finalPosition>
+      <jockey>Andrew Banks</jockey>
+      <margin>0</margin>
+      <race>
+        <number>1</number>
+        <name>Parkes Farm Centre Mdn Plate</name>
+        <meeting>
+          <date>2021-01-23T00:00:00Z</date>
+          <track>
+            <name>Parkes</name>
+          </track>
+        </meeting>
+      </race>
+    </competitors>
+    <competitors>
+      <finalPosition>4</finalPosition>
+      <jockey>Brodie Loy</jockey>
+      <margin>3.49</margin>
+      <race>
+        <number>3</number>
+        <name>One Stop Automotive Plate (C1)</name>
+        <meeting>
+          <date>2021-01-11T00:00:00Z</date>
+          <track>
+            <name>Wellington</name>
+          </track>
+        </meeting>
+      </race>
+    </competitors>
+    <competitors>
+      <finalPosition>0</finalPosition>
+      <jockey>Unknown</jockey>
+      <margin>0</margin>
+      <race>
+        <number>3</number>
+        <name>Tab Rewards Mdn Plate</name>
+        <meeting>
+          <date>2021-01-07T00:00:00Z</date>
+          <track>
+            <name>Muswellbrook</name>
+          </track>
+        </meeting>
+      </race>
+    </competitors>
+    <competitors>
+      <finalPosition>0</finalPosition>
+      <jockey>Jake Pracey-Holmes</jockey>
+      <margin>0</margin>
+      <race>
+        <number>4</number>
+        <name>Gilgandra Toyota Mdn Hcp</name>
+        <meeting>
+          <date>2021-01-03T00:00:00Z</date>
+          <track>
+            <name>Gilgandra</name>
+          </track>
+        </meeting>
+      </race>
+    </competitors>
+  </competitorsConnection>
+</runner>
