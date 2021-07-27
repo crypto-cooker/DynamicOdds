@@ -1,0 +1,2 @@
+# DynamicOdds
+C# and GraphQL
