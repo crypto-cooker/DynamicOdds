@@ -22,4 +22,3 @@ D:\Pending\Java_graphql\DOFeed\obj\Release\DOFeed.csproj.CoreCompileInputs.cache
 D:\Pending\Java_graphql\DOFeed\obj\Release\DOFeed.csproj.CopyComplete
 D:\Pending\Java_graphql\DOFeed\obj\Release\DOFeed.exe
 D:\Pending\Java_graphql\DOFeed\obj\Release\DOFeed.pdb
-D:\Pending\Java_graphql\DOFeed\obj\Release\DOFeed.csproj.AssemblyReference.cache

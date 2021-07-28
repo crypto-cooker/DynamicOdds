@@ -23,11 +23,24 @@ namespace DOFeed
         private string pw = "Roger4870";
 
         private string graphQLEndpointUrl = "https://ql.uat.coredb.tbm.sh/query";
+        private string tokenEndpointUrl = "https://bmcoredb-uat.auth.ap-southeast-2.amazoncognito.com/oauth2/token";
+        private string clientID = "4eevk9m5f39kut9njqhfi19qn0";
+        private string clientSecret = "1obi38gcdov3eupau41ns3cp3nquf08kfvpal3r3ifhfmh1sgg8u";
         private RestClient _client;
+        private RestClient _tokenClient;
+        private string tokenStr = "";
         public WebFeed(Dictionary<string, string> argList)
         {
             this.argList = argList;
             _client = new RestClient(graphQLEndpointUrl);
+            _tokenClient = new RestClient(tokenEndpointUrl);
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("cache-control", "no-cache");
+            request.AddHeader("content-type", "application/x-www-form-urlencoded");
+            request.AddParameter("application/x-www-form-urlencoded", "grant_type=client_credentials&scope=graphql/api&client_id=" + clientID+"&client_secret="+clientSecret, ParameterType.RequestBody);
+            IRestResponse response = _tokenClient.Execute(request);
+            dynamic json = JsonConvert.DeserializeObject(response.Content);
+            tokenStr = json["access_token"];
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
         }
         public XmlDocument JsonToXML(string json)
@@ -64,18 +77,24 @@ namespace DOFeed
                     query = makeRunnerQuery(id);
                     result = Execute(query, null, new Dictionary<string, string>());
                     xmlStr = result.data.ToString();
-                    doc = JsonConvert.DeserializeXmlNode(xmlStr);
+                    doc = JsonToXML(xmlStr);
                     doc.Save(argList["outfile"]);
                     break;
+
                 case "GetRace":
                     id = argList["id"];
                     query = makeRaceQuery(id);
                     result = Execute(query, null, new Dictionary<string, string>());
                     xmlStr = result.data.ToString();
-                    doc = JsonConvert.DeserializeXmlNode(xmlStr);
+                    doc = JsonToXML(xmlStr);
                     doc.Save(argList["outfile"]);
                     break;
-                case "GetEvent":
+                case "GetSportSources":
+                    query = makeSportSources();
+                    result = Execute(query, null, new Dictionary<string, string>());
+                    xmlStr = result.data.ToString();
+                    doc = JsonToXML(xmlStr);
+                    doc.Save(argList["outfile"]);
                     break;
                 case "GetEventSchedule":
                     break;
@@ -89,6 +108,34 @@ namespace DOFeed
                     break;
                 case "GetBookmakerFlucs":
                     break;
+                case "GetSportTypes":
+                    query = makeSportTypes();
+                    result = Execute(query, null, new Dictionary<string, string>());
+                    xmlStr = result.data.ToString();
+                    doc = JsonToXML(xmlStr);
+                    doc.Save(argList["outfile"]);
+                    break;
+                case "GetSources":
+                    query = makeSources();
+                    result = Execute(query, null, new Dictionary<string, string>());
+                    xmlStr = result.data.ToString();
+                    doc = JsonToXML(xmlStr);
+                    doc.Save(argList["outfile"]);
+                    break;
+                case "GetSportEvents":
+                    query = makeSportEvents();
+                    result = Execute(query, null, new Dictionary<string, string>());
+                    xmlStr = result.data.ToString();
+                    doc = JsonToXML(xmlStr);
+                    doc.Save(argList["outfile"]);
+                    break;
+                case "GetTracks":
+                    query = makeTracks();
+                    result = Execute(query, null, new Dictionary<string, string>());
+                    xmlStr = result.data.ToString();
+                    doc = JsonToXML(xmlStr);
+                    doc.Save(argList["outfile"]);
+                    break;
                 default:
                     break;
             }
@@ -99,7 +146,11 @@ namespace DOFeed
         {
             var request = new RestRequest("/", Method.POST);
             request.Timeout = timeout;
-            request.AddCookie("BMDBTOKEN", "DEMO");
+            if(tokenStr.Length>0)
+            {
+                request.AddHeader("authorization", "Bearer "+tokenStr);
+            }
+            //request.AddCookie("BMDBTOKEN", "DEMO");
             if (additionalHeaders != null && additionalHeaders.Count > 0)
             {
                 foreach (var additionalHeader in additionalHeaders)
@@ -107,7 +158,6 @@ namespace DOFeed
                     request.AddHeader(additionalHeader.Key, additionalHeader.Value);
                 }
             }
-
             request.AddJsonBody(new
             {
                 query = query,
@@ -130,6 +180,75 @@ namespace DOFeed
             ";
         }
 
+        private string makeSources()
+        {
+            return @"
+            {
+                sources{
+                    code
+                    name
+                    gbsCode
+                    isPriceSource
+                }
+            }
+            ";
+        }
+        private string makeTracks()
+        {
+            return @"
+            {
+                tracks{
+                    id
+                    created
+                    updated
+                    name
+                    country
+                    state
+                    surface
+                    abbreviation
+                }
+            }
+            ";
+        }
+        private string makeSportEvents()
+        {
+            return @"
+            {
+                sources{
+                    code
+                    name
+                    gbsCode
+                    isPriceSource
+                }
+            }
+            ";
+        }
+        private string makeSportSources()
+        {
+            return @"
+                {
+                  sportSources{
+                    id
+                    name
+                    description
+                    trusted
+                    modified_date
+                  }
+                }
+            ";
+        }
+        private string makeSportTypes()
+        {
+            return @"
+                {
+                  sportTypes{
+                    id
+                    name
+                    description
+                  }
+                }
+            ";
+        }
         private string makeRunnerQuery(string id)
         {
             return @"
@@ -170,9 +289,9 @@ namespace DOFeed
                             }
                             competitors {
                                 runner { id
-                        }
-                        tabNo
-                        barrier
+                                        }
+                                tabNo
+                                barrier
                                 name
                                 age
                                 sex
@@ -189,69 +308,7 @@ namespace DOFeed
                 }
             ";
         }
-        private string constructBookmakerFlucsUrl()
-        {
-            string sessionId = argList["sessionid"];
-            string eventId = argList["eventid"];
-            string baid = argList["baid"];
-            return $"{feedUrl}GetData.asp?SessionID={sessionId}&Method=GetBookmakerFlucs&EventID={eventId}&BAID={baid}";
-        }
-
-        private string constructBettingAgenciesUrl()
-        {
-            string sessionId = argList["sessionid"];
-            return $"{feedUrl}GetData.asp?SessionID={sessionId}&Method=GetBettingAgencies";
-        }
-
-        private string constructExoticsUrl()
-        {
-            string sessionId = argList["sessionid"];
-            string exoticType = argList["exotictype"];
-            string eventId = argList["eventid"];
-            return $"{feedUrl}GetData.asp?SessionID={sessionId}&Method=GetExotics&EventID={eventId}&ExoticType={exoticType}";
-        }
-
-        private string constructEventResultsUrl()
-        {
-            string sessionId = argList["sessionid"];
-            string eventId = argList["eventid"];
-            return $"{feedUrl}GetData.asp?SessionID={sessionId}&Method=GetEventResults&EventID={eventId}";
-        }
-
-        private string constructRunnerOddsUrl()
-        {
-            string sessionId = argList["sessionid"];
-            string eventId = argList["eventid"];
-            return $"{feedUrl}GetData.asp?SessionID={sessionId}&Method=GetRunnerOdds&EventID={eventId}";
-        }
-
-        private string constructEventScheduleUrl()
-        {
-            string sessionId = argList["sessionid"];
-            string date = argList["date"];
-            return $"{feedUrl}GetData.asp?SessionID={sessionId}&Method=GetEventSchedule&Date={date}&Types=R&Limit=999";
-        }
-
-        private string constructEventUrl()
-        {
-            string sessionId = argList["sessionid"];
-            string eventId = argList["eventid"];
-            return $"{feedUrl}GetData.asp?SessionID={sessionId}&Method=GetEvent&EventID={eventId}&Runners=true";
-        }
-
-        private string constructMeetingsUrl()
-        {
-            string sessionId = argList["sessionid"];
-            string meetingId = argList["meetingid"];
-            return $"{feedUrl}GetData.asp?SessionID={sessionId}&Method=GetMeeting&MeetingID={meetingId}&Runners=true";
-        }
-
-        private string constructAllMeetingsUrl()
-        {
-            string sessionId = argList["sessionid"];
-            string date = argList["date"];
-            return $"{feedUrl}GetData.asp?SessionID={sessionId}&Method=GetMeetingsAll&Date={date}&Types=R&Runners=true";
-        }
+        
 
         private string ApplyMethod(string finalUrl)
         {
