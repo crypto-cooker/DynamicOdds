@@ -9,3 +9,4 @@ D:\Pending\Java_graphql\DOFeed\obj\Debug\DOFeed.pdb
 D:\Pending\Java_graphql\DOFeed\bin\Debug\Newtonsoft.Json.dll
 D:\Pending\Java_graphql\DOFeed\bin\Debug\RestSharp.dll
 D:\Pending\Java_graphql\DOFeed\obj\Debug\DOFeed.csproj.CopyComplete
+D:\Pending\Java_graphql\DOFeed\obj\Debug\DOFeed.csproj.AssemblyReference.cache

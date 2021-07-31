@@ -24,6 +24,9 @@ namespace DOFeed
 
         private string graphQLEndpointUrl = "https://ql.uat.coredb.tbm.sh/query";
         private string tokenEndpointUrl = "https://bmcoredb-uat.auth.ap-southeast-2.amazoncognito.com/oauth2/token";
+
+        private string officialUrl = "http://feeds.officialprice.com.au/feeds/op_feed_new.php";
+
         private string clientID = "4eevk9m5f39kut9njqhfi19qn0";
         private string clientSecret = "1obi38gcdov3eupau41ns3cp3nquf08kfvpal3r3ifhfmh1sgg8u";
         private RestClient _client;
@@ -55,89 +58,119 @@ namespace DOFeed
 
             return doc;
         }
+        public string getOfficialFeed(string timestamp)
+        {
+            string url = officialUrl + "?ts=" + timestamp;
+            try
+            {
+                var http = new ServerXMLHTTP60();
+                http.open("GET", url, false);
+                http.setRequestHeader("Connection", "Keep-Alive");
+                http.setRequestHeader("User-Agent", "Mozilla/5.0 " + DateTime.Now.ToLongTimeString());
+
+                http.send();
+                return http.responseText;
+            }
+            catch (Exception e)
+            {
+                return "";
+            }
+        }
         internal string ProcessFeed()
         {
             string xmlResult = string.Empty;
             string query;
             var xmlStr = "";
-            switch (argList["method"])
+            var official = argList["official"];
+            if (official == "true")
             {
-                case "Login":
-                    break;
-                case "GetMeetingsAll":
-                    string date = argList["date"];
-                    query = makeMeetingQuery(date);
-                    var result = Execute(query, null, new Dictionary<string, string>());
-                    xmlStr = result.data.ToString();
-                    XmlDocument doc = JsonToXML(xmlStr);
-                    doc.Save(argList["outfile"]);
-                    break;
-                case "GetRunner":
-                    string id = argList["id"];
-                    query = makeRunnerQuery(id);
-                    result = Execute(query, null, new Dictionary<string, string>());
-                    xmlStr = result.data.ToString();
-                    doc = JsonToXML(xmlStr);
-                    doc.Save(argList["outfile"]);
-                    break;
+                string timestamp = argList["timestamp"];
+                //query = makeMeetingQuery(timestamp);
+                var result = getOfficialFeed(timestamp);
+                //xmlStr = result.data.ToString();
+                XmlDocument doc = JsonToXML(result);
+                doc.Save(argList["outfile"]);
 
-                case "GetRace":
-                    id = argList["id"];
-                    query = makeRaceQuery(id);
-                    result = Execute(query, null, new Dictionary<string, string>());
-                    xmlStr = result.data.ToString();
-                    doc = JsonToXML(xmlStr);
-                    doc.Save(argList["outfile"]);
-                    break;
-                case "GetSportSources":
-                    query = makeSportSources();
-                    result = Execute(query, null, new Dictionary<string, string>());
-                    xmlStr = result.data.ToString();
-                    doc = JsonToXML(xmlStr);
-                    doc.Save(argList["outfile"]);
-                    break;
-                case "GetEventSchedule":
-                    break;
-                case "GetRunnerOdds":
-                    break;
-                case "GetEventResults":
-                    break;
-                case "GetExotics":
-                    break;
-                case "GetBettingAgencies":
-                    break;
-                case "GetBookmakerFlucs":
-                    break;
-                case "GetSportTypes":
-                    query = makeSportTypes();
-                    result = Execute(query, null, new Dictionary<string, string>());
-                    xmlStr = result.data.ToString();
-                    doc = JsonToXML(xmlStr);
-                    doc.Save(argList["outfile"]);
-                    break;
-                case "GetSources":
-                    query = makeSources();
-                    result = Execute(query, null, new Dictionary<string, string>());
-                    xmlStr = result.data.ToString();
-                    doc = JsonToXML(xmlStr);
-                    doc.Save(argList["outfile"]);
-                    break;
-                case "GetSportEvents":
-                    query = makeSportEvents();
-                    result = Execute(query, null, new Dictionary<string, string>());
-                    xmlStr = result.data.ToString();
-                    doc = JsonToXML(xmlStr);
-                    doc.Save(argList["outfile"]);
-                    break;
-                case "GetTracks":
-                    query = makeTracks();
-                    result = Execute(query, null, new Dictionary<string, string>());
-                    xmlStr = result.data.ToString();
-                    doc = JsonToXML(xmlStr);
-                    doc.Save(argList["outfile"]);
-                    break;
-                default:
-                    break;
+            } else {
+                switch (argList["method"])
+                {
+                    case "Login":
+                        break;
+                    case "GetMeetingsAll":
+                        string date = argList["date"];
+                        query = makeMeetingQuery(date);
+                        var result = Execute(query, null, new Dictionary<string, string>());
+                        xmlStr = result.data.ToString();
+                        XmlDocument doc = JsonToXML(xmlStr);
+                        doc.Save(argList["outfile"]);
+                        break;
+                    case "GetRunner":
+                        string id = argList["id"];
+                        query = makeRunnerQuery(id);
+                        result = Execute(query, null, new Dictionary<string, string>());
+                        xmlStr = result.data.ToString();
+                        doc = JsonToXML(xmlStr);
+                        doc.Save(argList["outfile"]);
+                        break;
+
+                    case "GetRace":
+                        id = argList["id"];
+                        query = makeRaceQuery(id);
+                        result = Execute(query, null, new Dictionary<string, string>());
+                        xmlStr = result.data.ToString();
+                        doc = JsonToXML(xmlStr);
+                        doc.Save(argList["outfile"]);
+                        break;
+                    case "GetSportSources":
+                        query = makeSportSources();
+                        result = Execute(query, null, new Dictionary<string, string>());
+                        xmlStr = result.data.ToString();
+                        doc = JsonToXML(xmlStr);
+                        doc.Save(argList["outfile"]);
+                        break;
+                    case "GetEventSchedule":
+                        break;
+                    case "GetRunnerOdds":
+                        break;
+                    case "GetEventResults":
+                        break;
+                    case "GetExotics":
+                        break;
+                    case "GetBettingAgencies":
+                        break;
+                    case "GetBookmakerFlucs":
+                        break;
+                    case "GetSportTypes":
+                        query = makeSportTypes();
+                        result = Execute(query, null, new Dictionary<string, string>());
+                        xmlStr = result.data.ToString();
+                        doc = JsonToXML(xmlStr);
+                        doc.Save(argList["outfile"]);
+                        break;
+                    case "GetSources":
+                        query = makeSources();
+                        result = Execute(query, null, new Dictionary<string, string>());
+                        xmlStr = result.data.ToString();
+                        doc = JsonToXML(xmlStr);
+                        doc.Save(argList["outfile"]);
+                        break;
+                    case "GetSportEvents":
+                        query = makeSportEvents();
+                        result = Execute(query, null, new Dictionary<string, string>());
+                        xmlStr = result.data.ToString();
+                        doc = JsonToXML(xmlStr);
+                        doc.Save(argList["outfile"]);
+                        break;
+                    case "GetTracks":
+                        query = makeTracks();
+                        result = Execute(query, null, new Dictionary<string, string>());
+                        xmlStr = result.data.ToString();
+                        doc = JsonToXML(xmlStr);
+                        doc.Save(argList["outfile"]);
+                        break;
+                    default:
+                        break;
+                }
             }
             return xmlResult;
         }

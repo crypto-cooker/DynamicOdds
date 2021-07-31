@@ -22,6 +22,8 @@ namespace DOFeed
             argList["eventid"] = "";
             argList["exotictype"] = "";
             argList["baid"] = "";
+            argList["timestamp"] = "0";
+            argList["official"] = "";
         }
 
         internal Dictionary<string, string> ProcessArgs()
@@ -72,6 +74,14 @@ namespace DOFeed
                     "b|baid=", "Betting Agency Identifier - list can be retrieved via the GetBettingAgencies method",
                         v => argList["baid"] = v
                 },
+                {
+                    "t|timestamp=", "the latest timestamp.",
+                        v => argList["timestamp"] = v
+                },
+                {
+                    "o|official=", "the official prices.",
+                        v => argList["official"] = v
+                },
 
             };
             List<string> extra;
@@ -91,6 +101,8 @@ namespace DOFeed
                 argList["eventid"] = "";
                 argList["exotictype"] = "";
                 argList["baid"] = "";
+                argList["timestamp"] = "0";
+                argList["officail"] = "";
             }
             return argList;
         }
