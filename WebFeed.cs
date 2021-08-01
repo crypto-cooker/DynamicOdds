@@ -12,6 +12,10 @@ using System.Xml;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Xml.Linq;
+using System.IO;
+using System.Security.Permissions;
+using System.Xml.Serialization;
+using System.Security;
 
 namespace DOFeed
 {
@@ -58,6 +62,35 @@ namespace DOFeed
 
             return doc;
         }
+        private void WriteOut(RootObject data)
+        {
+            {
+                TextWriter writer = null;
+                string outfile = argList["outfile"];
+                try
+                {
+                    FileIOPermission f = new FileIOPermission(FileIOPermissionAccess.Read | FileIOPermissionAccess.Write, outfile);
+                    try
+                    {
+                        f.Demand();
+                    }
+                    catch (SecurityException s)
+                    {
+                        return;
+                    }
+                    XmlSerializer formatter = new XmlSerializer(typeof(RootObject));
+                    writer = new StreamWriter(outfile, false);
+                    formatter.Serialize(writer, data);
+                }
+                finally
+                {
+                    if (writer != null)
+                    {
+                        writer.Close();
+                    }
+                }
+            }
+        }
         public string getOfficialFeed(string timestamp)
         {
             string url = officialUrl + "?ts=" + timestamp;
@@ -85,12 +118,9 @@ namespace DOFeed
             if (official == "true")
             {
                 string timestamp = argList["timestamp"];
-                //query = makeMeetingQuery(timestamp);
                 var result = getOfficialFeed(timestamp);
-                //xmlStr = result.data.ToString();
-                XmlDocument doc = JsonToXML(result);
-                doc.Save(argList["outfile"]);
-
+                RootObject data = JsonConvert.DeserializeObject<RootObject>(result);
+                WriteOut(data);
             } else {
                 switch (argList["method"])
                 {
@@ -368,5 +398,85 @@ namespace DOFeed
         {
             return feedUrl + "Login.asp?UserName=" + userName + "&Password=" + pw;
         }
+    }
+
+    public class Runner
+    {
+        public int no { get; set; }
+        public string name { get; set; }
+        public string jockey { get; set; }
+        public bool jockey_changed { get; set; }
+        public bool scr { get; set; }
+        public bool late_scr { get; set; }
+        public double price_open { get; set; }
+        public double price { get; set; }
+        public string price_flucs { get; set; }
+        public int wsp_count { get; set; }
+        public int? updated_ts { get; set; }
+    }
+
+    public class Result
+    {
+        public int plc { get; set; }
+        public int no { get; set; }
+        public string name { get; set; }
+        public double div_win_v { get; set; }
+        public double div_win_n { get; set; }
+        public double div_win_q { get; set; }
+        public double div_plc_v { get; set; }
+        public double div_plc_n { get; set; }
+        public double div_plc_q { get; set; }
+    }
+
+    public class CalcData
+    {
+        public string r_no_str { get; set; }
+        public string scr_str { get; set; }
+        public string odds_str { get; set; }
+    }
+
+    public class DedRunner
+    {
+        public int r_no { get; set; }
+        public int ded_w { get; set; }
+        public int ded_p { get; set; }
+    }
+
+    public class Deduction
+    {
+        public int r_no_scr { get; set; }
+        public string r_no_scr_time { get; set; }
+        public CalcData calc_data { get; set; }
+        public List<DedRunner> ded_runners { get; set; }
+    }
+
+    public class Event
+    {
+        public string meeting_id { get; set; }
+        public string event_id { get; set; }
+        public string m_code_4char { get; set; }
+        public string state { get; set; }
+        public bool state_op_status { get; set; }
+        public string date { get; set; }
+        public string start_time_vic { get; set; }
+        public string venue { get; set; }
+        public string no { get; set; }
+        public string name { get; set; }
+        public string status { get; set; }
+        public string track_cond { get; set; }
+        public int track_rtg { get; set; }
+        public string weather { get; set; }
+        public int updated_ts { get; set; }
+        public List<Runner> runners { get; set; }
+        public double op_mkt_pct { get; set; }
+        public List<Result> results { get; set; }
+        public List<Deduction> deductions { get; set; }
+    }
+
+    public class RootObject
+    {
+        public List<Event> @event { get; set; }
+        public double feed_version { get; set; }
+        public int server_ts { get; set; }
     }
 }
