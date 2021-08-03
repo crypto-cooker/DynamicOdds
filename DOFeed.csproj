@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{13729E68-AB99-4129-BD54-2204D61F450E}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>DOFeed</RootNamespace>
-    <AssemblyName>DOFeed</AssemblyName>
+    <RootNamespace>DYNMFeed</RootNamespace>
+    <AssemblyName>DYNMFeed</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
